@@ -26,6 +26,18 @@
 .DS_Store
 Thumbs.db
 *.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.keystore
+service-account*.json
+google-services.json
+GoogleService-Info.plist
+
+# mobile release artifacts
+*.apk
+*.aab
 
 # debug
 npm-debug.log*
@@ -51,6 +63,8 @@ yarn-error.log*
 
 # local agent instructions
 .AGENTS/
+.agents/
+.codex/
 .copilot/
 AGENTS.md
 CLAUDE.md

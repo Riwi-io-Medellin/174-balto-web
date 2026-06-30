@@ -7,10 +7,10 @@ export const REFRESH_TOKEN_COOKIE = "balto_refresh_token";
 const refreshTokenMaxAgeSeconds = 60 * 60 * 24 * 7;
 
 export function getBackendUrl(path: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.BACKEND_API_URL;
 
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_URL is not configured.");
+    throw new Error("BACKEND_API_URL is not configured.");
   }
 
   const cleanBaseUrl = baseUrl.replace(/\/$/, "");

@@ -30,10 +30,10 @@ export async function POST(request: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
 
-    if (message.includes("NEXT_PUBLIC_API_URL")) {
+    if (message.includes("BACKEND_API_URL")) {
       return NextResponse.json(
         {
-          error: "NEXT_PUBLIC_API_URL no esta configurada.",
+          error: "BACKEND_API_URL no esta configurada.",
           code: "API_URL_NOT_CONFIGURED",
         },
         { status: 500 },

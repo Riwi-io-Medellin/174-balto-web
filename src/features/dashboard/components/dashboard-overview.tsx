@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Activity, MapPin, PawPrint, Users2 } from "lucide-react";
+import { Activity, MapPin, PawPrint, ShieldCheck, Users2 } from "lucide-react";
+import { VerificationPanel } from "@/features/verification/components/verification-panel";
 import { ApiError, listUsers } from "@/features/users/api";
 import { UsersTable } from "@/features/users/components/users-table";
 
+type DashboardTab = "users" | "verification";
+
 export function DashboardOverview() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<DashboardTab>("users");
   const usersQuery = useQuery({
     queryKey: ["admin", "users"],
     queryFn: listUsers,
@@ -65,34 +69,82 @@ export function DashboardOverview() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map(({ label, value, icon: Icon }) => (
-          <article
-            key={label}
-            className="rounded-lg border border-white/10 bg-white/5 p-5"
-          >
-            <Icon className="h-5 w-5 text-[#7cb7b7]" />
-            <p className="mt-4 text-2xl font-semibold text-white">{value}</p>
-            <p className="mt-1 text-sm text-zinc-400">{label}</p>
-          </article>
-        ))}
+      <div className="flex flex-wrap gap-2 rounded-lg border border-white/10 bg-white/5 p-2">
+        <DashboardTabButton
+          active={activeTab === "users"}
+          icon={Users2}
+          label="Usuarios"
+          onClick={() => setActiveTab("users")}
+        />
+        <DashboardTabButton
+          active={activeTab === "verification"}
+          icon={ShieldCheck}
+          label="Verificaciones"
+          onClick={() => setActiveTab("verification")}
+        />
       </div>
 
-      <section className="rounded-lg border border-white/10 bg-white/5 p-6">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 className="text-lg font-semibold text-white">Usuarios</h3>
-            <p className="mt-1 text-sm text-zinc-400">
-              Gestion inicial basada en el endpoint existente de usuarios.
-            </p>
+      {activeTab === "verification" ? (
+        <VerificationPanel />
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {metrics.map(({ label, value, icon: Icon }) => (
+              <article
+                key={label}
+                className="rounded-lg border border-white/10 bg-white/5 p-5"
+              >
+                <Icon className="h-5 w-5 text-[#7cb7b7]" />
+                <p className="mt-4 text-2xl font-semibold text-white">{value}</p>
+                <p className="mt-1 text-sm text-zinc-400">{label}</p>
+              </article>
+            ))}
           </div>
-          <span className="rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">
-            {users.length} registros
-          </span>
-        </div>
-        <UsersTable users={users} />
-      </section>
+
+          <section className="rounded-lg border border-white/10 bg-white/5 p-6">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Usuarios</h3>
+                <p className="mt-1 text-sm text-zinc-400">
+                  Gestion inicial basada en el endpoint existente de usuarios.
+                </p>
+              </div>
+              <span className="rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">
+                {users.length} registros
+              </span>
+            </div>
+            <UsersTable users={users} />
+          </section>
+        </>
+      )}
     </section>
+  );
+}
+
+function DashboardTabButton({
+  active,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  icon: typeof Users2;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-medium transition ${
+        active
+          ? "bg-white text-zinc-950"
+          : "text-zinc-300 hover:bg-white/10 hover:text-white"
+      }`}
+    >
+      <Icon className="h-4 w-4" />
+      {label}
+    </button>
   );
 }
 

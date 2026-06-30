@@ -132,6 +132,10 @@ POST /api/auth/login
 POST /api/auth/refresh
 POST /api/auth/logout
 GET  /api/admin/users
+GET  /api/admin/verification/businesses
+PATCH /api/admin/verification/businesses/:businessId/status
+GET  /api/admin/verification/walkers
+PATCH /api/admin/verification/walkers/:walkerId/status
 ```
 
 Estas rutas guardan `accessToken` y `refreshToken` en cookies `httpOnly` e
@@ -149,8 +153,9 @@ Si no hay sesion, redirige a:
 /login
 ```
 
-El dashboard actual consume usuarios reales desde `/api/users` del backend y
-calcula metricas iniciales a partir de esos datos.
+El dashboard actual consume usuarios reales desde `/api/users` del backend,
+calcula metricas iniciales y permite revisar veterinarias/walkers con sus
+documentos para actualizar `verification_status`.
 
 ## Despliegue futuro en Vercel
 

@@ -29,6 +29,7 @@ src/
     auth/
     dashboard/
     marketing/
+    users/
   infrastructure/
     http/
   shared/
@@ -107,7 +108,7 @@ NEXT_PUBLIC_APK_URL=https://url-publica/balto.apk
 ## Integracion con backend
 
 El backend debe exponer una URL publica o local terminada en `/api`.
-El cliente HTTP lee esa URL desde `NEXT_PUBLIC_API_URL`.
+El servidor de Next lee esa URL desde `NEXT_PUBLIC_API_URL`.
 
 Para que login y dashboard funcionen en navegador, el backend tambien debe
 permitir CORS desde el origen local:
@@ -119,7 +120,37 @@ http://localhost:3000
 Y, en despliegue, desde el dominio real de la web.
 
 La landing no enlaza al dashboard. El backoffice vive en `/dashboard` y debe
-protegerse con login/rol administrador antes de usarse con datos reales.
+protegerse con login antes de usarse con datos reales.
+
+## Backoffice privado
+
+El navegador no llama directamente al backend para operaciones administrativas.
+Usa rutas BFF de Next:
+
+```txt
+POST /api/auth/login
+POST /api/auth/refresh
+POST /api/auth/logout
+GET  /api/admin/users
+```
+
+Estas rutas guardan `accessToken` y `refreshToken` en cookies `httpOnly` e
+inyectan `Authorization: Bearer <token>` cuando consumen el backend.
+
+El middleware protege:
+
+```txt
+/dashboard
+```
+
+Si no hay sesion, redirige a:
+
+```txt
+/login
+```
+
+El dashboard actual consume usuarios reales desde `/api/users` del backend y
+calcula metricas iniciales a partir de esos datos.
 
 ## Despliegue futuro en Vercel
 

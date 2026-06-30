@@ -43,8 +43,8 @@ export default function LandingPage() {
               Balto conecta paseos, mascotas y servicios cerca de ti.
             </h1>
             <p className="max-w-2xl text-lg leading-8 text-zinc-600">
-              Descarga la app Android y prueba la experiencia movil mientras el
-              panel administrativo centraliza usuarios y metricas.
+              Descarga la app Android y prueba una experiencia pensada para
+              duenos, walkers y negocios del ecosistema pet care.
             </p>
           </div>
 

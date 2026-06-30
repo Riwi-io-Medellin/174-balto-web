@@ -1,0 +1,10 @@
+{
+  "appName": "Balto",
+  "version": "1.0.0",
+  "apkUrl": "/downloads/balto.apk",
+  "updatedAt": "2026-06-27",
+  "notes": [
+    "Local download metadata for the first Balto web release.",
+    "Replace balto.apk with the Flutter release APK before publishing."
+  ]
+}

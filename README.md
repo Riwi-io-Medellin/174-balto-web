@@ -1,63 +1,27 @@
-# Front End Pets
+# Balto Web
 
-Next.js 16 app for a pets platform with:
+Aplicacion web de Balto construida con Next.js. Contiene la landing publica
+para descarga del APK y el punto de partida del backoffice administrativo
+privado.
 
-- a public landing page
-- an admin dashboard
-- ASP.NET API integration for authentication and data
-- Tailwind CSS for styling
+## Stack
 
-The backend owns identity and auth. This frontend focuses on UI, routing, data fetching, and presentation.
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Axios
+- TanStack Query
+- React Hook Form + Zod
+- Lucide React
 
-## How it works
-
-- `src/app/(marketing)` contains the public site.
-- `src/app/(dashboard)` contains the admin area.
-- `src/infrastructure/http` holds API clients and backend integration code.
-- `src/features` groups UI and logic by business area.
-- `src/shared` holds reusable utilities and shared code.
-
-The app uses a shared root layout in `src/app/layout.tsx` and route groups to keep public and admin sections separated.
-
-## Packages
-
-### Runtime
-
-- `next`
-- `react`
-- `react-dom`
-- `axios`
-- `@tanstack/react-query`
-- `zod`
-- `react-hook-form`
-- `@hookform/resolvers`
-- `clsx`
-- `tailwind-merge`
-- `lucide-react`
-
-### Dev
-
-- `typescript`
-- `eslint`
-- `eslint-config-next`
-- `tailwindcss`
-- `@tailwindcss/postcss`
-- `@types/node`
-- `@types/react`
-- `@types/react-dom`
-
-## Structure
+## Estructura
 
 ```txt
 src/
   app/
-    (marketing)/
-      layout.tsx
-      page.tsx
-    (dashboard)/
-      layout.tsx
-      dashboard/
-        page.tsx
+    (marketing)/       # landing publica
+    (dashboard)/       # backoffice administrativo privado
     globals.css
     layout.tsx
     providers.tsx
@@ -65,23 +29,177 @@ src/
     auth/
     dashboard/
     marketing/
+    users/
   infrastructure/
     http/
   shared/
     utils/
+public/
+  downloads/
+    version.json
 ```
 
-## Run it
+## Variables locales
+
+Copia el ejemplo y ajusta los valores:
 
 ```bash
+cp .env.example .env.local
+```
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_APK_URL=/downloads/balto.apk
+NEXT_PUBLIC_APP_VERSION=1.0.0
+```
+
+Si vas a probar contra el backend desplegado, cambia `NEXT_PUBLIC_API_URL`:
+
+```env
+NEXT_PUBLIC_API_URL=https://tu-backend/api
+```
+
+## Correr localmente
+
+El repo usa `pnpm` mediante Corepack.
+
+```bash
+corepack enable
+corepack prepare pnpm@10.34.1 --activate
 pnpm install
 pnpm dev
 ```
 
-Then open `http://localhost:3000`.
+Abre:
 
-## Notes
+```txt
+http://localhost:3000
+```
 
-- Global Tailwind styles live in `src/app/globals.css`.
-- The API base URL is read from `NEXT_PUBLIC_API_URL`.
-- `src/app/providers.tsx` sets up React Query.
+## Validacion local
+
+Antes de abrir un pull request o desplegar:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
+## Descarga del APK
+
+Para probar la landing con descarga local, copia el APK generado por Flutter en:
+
+```txt
+public/downloads/balto.apk
+```
+
+La metadata publica de descarga vive en:
+
+```txt
+public/downloads/version.json
+```
+
+Si el APK se aloja en otro lugar, cambia:
+
+```env
+NEXT_PUBLIC_APK_URL=https://url-publica/balto.apk
+```
+
+## Integracion con backend
+
+El backend debe exponer una URL publica o local terminada en `/api`.
+El servidor de Next lee esa URL desde `NEXT_PUBLIC_API_URL`.
+
+Para que login y dashboard funcionen en navegador, el backend tambien debe
+permitir CORS desde el origen local:
+
+```txt
+http://localhost:3000
+```
+
+Y, en despliegue, desde el dominio real de la web.
+
+La landing no enlaza al dashboard. El backoffice vive en `/dashboard` y debe
+protegerse con login antes de usarse con datos reales.
+
+## Backoffice privado
+
+El navegador no llama directamente al backend para operaciones administrativas.
+Usa rutas BFF de Next:
+
+```txt
+POST /api/auth/login
+POST /api/auth/refresh
+POST /api/auth/logout
+GET  /api/admin/users
+GET  /api/admin/verification/businesses
+PATCH /api/admin/verification/businesses/:businessId/status
+GET  /api/admin/verification/walkers
+PATCH /api/admin/verification/walkers/:walkerId/status
+```
+
+Estas rutas guardan `accessToken` y `refreshToken` en cookies `httpOnly` e
+inyectan `Authorization: Bearer <token>` cuando consumen el backend.
+
+El middleware protege:
+
+```txt
+/dashboard
+```
+
+Si no hay sesion, redirige a:
+
+```txt
+/login
+```
+
+El dashboard actual consume usuarios reales desde `/api/users` del backend,
+calcula metricas iniciales y permite revisar veterinarias/walkers con sus
+documentos para actualizar `verification_status`.
+
+## CI/CD
+
+El repositorio incluye GitHub Actions en `.github/workflows/ci.yml`.
+
+El workflow corre en pull requests y pushes a `main`, `staging`, `dev` y
+`feature/**`:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
+## Despliegue en Vercel
+
+Conecta solamente este repo (`balto-web`) en Vercel:
+
+```txt
+Framework Preset: Next.js
+Install Command: pnpm install --frozen-lockfile
+Build Command: pnpm build
+Output Directory: automatico
+Node.js Version: 20.x
+```
+
+La configuracion base vive en `vercel.json`.
+
+Configura en Vercel las mismas variables de `.env.example` con valores reales:
+
+```env
+NEXT_PUBLIC_API_URL=https://tu-backend/api
+NEXT_PUBLIC_APK_URL=/downloads/balto.apk
+NEXT_PUBLIC_APP_VERSION=1.0.0
+```
+
+Recomendacion de ramas en Vercel:
+
+```txt
+Production Branch: main
+Preview Deployments: pull requests
+```
+
+Antes de usar `main` como produccion, mergea la rama que contiene el dashboard
+actual (`feature/dashboard-foundation`) hacia `main`.

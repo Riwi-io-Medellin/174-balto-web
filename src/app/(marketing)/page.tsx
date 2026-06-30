@@ -262,7 +262,7 @@ export default function LandingPage() {
     <main className="overflow-hidden bg-[#fbfcff] text-[#16215c]">
       <section
         id="inicio"
-        className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-14 px-5 py-12 sm:px-8 lg:grid-cols-[1.04fr_0.96fr] lg:py-16"
+        className="relative mx-auto grid min-h-[calc(100vh-80px)] max-w-7xl items-center gap-14 px-5 py-12 sm:px-8 lg:grid-cols-[1.04fr_0.96fr] lg:py-16"
       >
         <div className="absolute inset-0 -z-10">
           <div className="absolute left-0 top-16 h-72 w-72 rounded-full bg-[#eef1ff] blur-3xl" />

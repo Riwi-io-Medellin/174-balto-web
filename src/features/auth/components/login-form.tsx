@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LockKeyhole, LogIn } from "lucide-react";
+import { LogIn, ShieldCheck } from "lucide-react";
 
 type LoginState = "idle" | "submitting" | "error";
 
@@ -43,45 +44,55 @@ export function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 shadow-sm"
+      className="w-full max-w-md rounded-[2rem] border border-white bg-white p-7 shadow-xl shadow-[#16215c]/8"
     >
-      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#607f7f] text-white">
-        <LockKeyhole className="h-5 w-5" />
+      <div className="flex items-center gap-4">
+        <Image
+          src="/balto-app-icon.png"
+          alt="Balto"
+          width={54}
+          height={54}
+          className="rounded-2xl shadow-[0_14px_28px_rgba(109,124,255,0.18)]"
+          priority
+        />
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6d7cff]">
+            Acceso privado
+          </p>
+          <h1 className="mt-1 text-2xl font-black text-[#16215c]">
+            Backoffice Balto
+          </h1>
+        </div>
       </div>
 
-      <div className="mt-5">
-        <h1 className="text-2xl font-semibold text-zinc-950">
-          Backoffice Balto
-        </h1>
-        <p className="mt-2 text-sm leading-6 text-zinc-600">
-          Acceso privado para administracion y gestion operativa.
-        </p>
-      </div>
+      <p className="mt-5 rounded-2xl bg-[#eef1ff] px-4 py-3 text-sm font-semibold leading-6 text-[#526071]">
+        Gestion administrativa de usuarios, verificaciones y servicios.
+      </p>
 
-      <label className="mt-6 block text-sm font-medium text-zinc-700">
+      <label className="mt-6 block text-sm font-black text-[#16215c]">
         Email
         <input
           name="email"
           type="email"
           autoComplete="email"
           required
-          className="mt-2 h-11 w-full rounded-md border border-zinc-300 px-3 text-sm text-zinc-950 outline-none transition focus:border-[#607f7f] focus:ring-2 focus:ring-[#607f7f]/15"
+          className="mt-2 h-12 w-full rounded-2xl border border-[#dfe5ef] bg-[#fbfcff] px-4 text-sm text-[#16215c] outline-none transition focus:border-[#6d7cff] focus:bg-white focus:ring-4 focus:ring-[#6d7cff]/12"
         />
       </label>
 
-      <label className="mt-4 block text-sm font-medium text-zinc-700">
+      <label className="mt-4 block text-sm font-black text-[#16215c]">
         Password
         <input
           name="password"
           type="password"
           autoComplete="current-password"
           required
-          className="mt-2 h-11 w-full rounded-md border border-zinc-300 px-3 text-sm text-zinc-950 outline-none transition focus:border-[#607f7f] focus:ring-2 focus:ring-[#607f7f]/15"
+          className="mt-2 h-12 w-full rounded-2xl border border-[#dfe5ef] bg-[#fbfcff] px-4 text-sm text-[#16215c] outline-none transition focus:border-[#6d7cff] focus:bg-white focus:ring-4 focus:ring-[#6d7cff]/12"
         />
       </label>
 
       {state === "error" ? (
-        <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="mt-4 rounded-2xl border border-[#fecaca] bg-[#fff1f2] px-4 py-3 text-sm font-semibold text-[#b91c1c]">
           {message}
         </p>
       ) : null}
@@ -89,11 +100,16 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={state === "submitting"}
-        className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-[#607f7f] px-4 text-sm font-semibold text-white transition hover:bg-[#4f6c6c] disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#6d7cff] px-4 text-sm font-black text-white shadow-lg shadow-[#6d7cff]/22 transition hover:-translate-y-0.5 hover:bg-[#5a69f0] disabled:cursor-not-allowed disabled:opacity-70"
       >
         <LogIn className="h-4 w-4" />
         {state === "submitting" ? "Ingresando..." : "Ingresar"}
       </button>
+
+      <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-[#687280]">
+        <ShieldCheck className="h-4 w-4 text-[#68d391]" />
+        Sesion protegida mediante cookies httpOnly.
+      </div>
     </form>
   );
 }

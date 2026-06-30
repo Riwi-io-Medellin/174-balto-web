@@ -88,11 +88,11 @@ export function VerificationPanel() {
   if (businessesQuery.isError || walkersQuery.isError) {
     const error = businessesQuery.error ?? walkersQuery.error;
     return (
-      <section className="rounded-lg border border-red-400/20 bg-red-400/10 p-6">
-        <h2 className="text-lg font-semibold text-red-100">
+      <section className="rounded-[1.7rem] border border-[#fecaca] bg-[#fff1f2] p-6 shadow-sm">
+        <h2 className="text-lg font-black text-[#b91c1c]">
           No fue posible cargar las verificaciones
         </h2>
-        <p className="mt-2 text-sm text-red-100/80">
+        <p className="mt-2 text-sm font-semibold text-[#b91c1c]/80">
           {error instanceof Error ? error.message : "Intenta nuevamente."}
         </p>
       </section>
@@ -101,22 +101,24 @@ export function VerificationPanel() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+      <div className="rounded-[1.7rem] border border-white bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-5">
           <div>
-            <ShieldCheck className="h-5 w-5 text-[#9dd0d0]" />
-            <h3 className="mt-4 text-lg font-semibold text-white">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef1ff] text-[#6d7cff]">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+            <h3 className="mt-4 text-xl font-black text-[#16215c]">
               Revision manual de servicios
             </h3>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+            <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#687280]">
               Revisa el estado actual, abre los documentos cargados y decide si
               una veterinaria o walker queda aprobado o rechazado.
             </p>
           </div>
-          <div className="rounded-lg border border-white/10 bg-zinc-950/50 px-4 py-3">
-            <p className="text-xs uppercase text-zinc-500">Regla operativa</p>
-            <p className="mt-1 text-sm font-medium text-white">
-              Solo `approved` queda activo en la app
+          <div className="rounded-2xl border border-[#68d391]/45 bg-[#eafbf0] px-4 py-3">
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#2f8a5b]">Regla operativa</p>
+            <p className="mt-1 text-sm font-black text-[#153f2a]">
+              Solo aprobado queda activo en la app
             </p>
           </div>
         </div>
@@ -124,16 +126,18 @@ export function VerificationPanel() {
 
       <VerificationSummary businesses={businesses} walkers={walkers} />
 
-      <section className="rounded-lg border border-white/10 bg-white/5 p-6">
+      <section className="rounded-[1.7rem] border border-white bg-white p-6 shadow-sm">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-          <Building2 className="h-5 w-5 text-[#9dd0d0]" />
-          <div>
-            <h3 className="text-lg font-semibold text-white">Veterinarias</h3>
-            <p className="text-sm text-zinc-400">
-              Documentos legales y datos de contacto del negocio.
-            </p>
-          </div>
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fcf8ee] text-[#8d5b13]">
+              <Building2 className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="text-lg font-black text-[#16215c]">Veterinarias</h3>
+              <p className="text-sm font-semibold text-[#687280]">
+                Documentos legales y datos de contacto del negocio.
+              </p>
+            </div>
           </div>
           <StatusLegend />
         </div>
@@ -147,16 +151,18 @@ export function VerificationPanel() {
         />
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-white/5 p-6">
+      <section className="rounded-[1.7rem] border border-white bg-white p-6 shadow-sm">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-          <UserCheck className="h-5 w-5 text-[#9dd0d0]" />
-          <div>
-            <h3 className="text-lg font-semibold text-white">Walkers</h3>
-            <p className="text-sm text-zinc-400">
-              Cedula, resultado KYC y documentos para revision manual.
-            </p>
-          </div>
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eafbf0] text-[#2f8a5b]">
+              <UserCheck className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="text-lg font-black text-[#16215c]">Walkers</h3>
+              <p className="text-sm font-semibold text-[#687280]">
+                Cedula, resultado KYC y documentos para revision manual.
+              </p>
+            </div>
           </div>
           <StatusLegend />
         </div>
@@ -189,10 +195,10 @@ function VerificationSummary({
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <SummaryCard icon={Building2} label="Veterinarias" value={businesses.length} />
-      <SummaryCard icon={Clock3} label="Veterinarias pendientes" value={pendingBusinesses} />
-      <SummaryCard icon={UserCheck} label="Walkers" value={walkers.length} />
-      <SummaryCard icon={Clock3} label="Walkers pendientes" value={pendingWalkers} />
+      <SummaryCard icon={Building2} label="Veterinarias" value={businesses.length} tone="sand" />
+      <SummaryCard icon={Clock3} label="Veterinarias pendientes" value={pendingBusinesses} tone="amber" />
+      <SummaryCard icon={UserCheck} label="Walkers" value={walkers.length} tone="green" />
+      <SummaryCard icon={Clock3} label="Walkers pendientes" value={pendingWalkers} tone="blue" />
     </div>
   );
 }
@@ -201,16 +207,27 @@ function SummaryCard({
   icon: Icon,
   label,
   value,
+  tone,
 }: {
   icon: typeof Building2;
   label: string;
   value: number;
+  tone: "sand" | "amber" | "green" | "blue";
 }) {
+  const tones = {
+    sand: "bg-[#fcf8ee] text-[#8d5b13]",
+    amber: "bg-[#fff7e6] text-[#b56e00]",
+    green: "bg-[#eafbf0] text-[#2f8a5b]",
+    blue: "bg-[#eef1ff] text-[#6d7cff]",
+  };
+
   return (
-    <article className="rounded-lg border border-white/10 bg-white/5 p-5">
-      <Icon className="h-5 w-5 text-[#9dd0d0]" />
-      <p className="text-2xl font-semibold text-white">{value}</p>
-      <p className="mt-1 text-sm text-zinc-400">{label}</p>
+    <article className="rounded-[1.5rem] border border-white bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#16215c]/6">
+      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${tones[tone]}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <p className="mt-4 text-2xl font-black text-[#16215c]">{value}</p>
+      <p className="mt-1 text-sm font-semibold text-[#687280]">{label}</p>
     </article>
   );
 }
@@ -227,7 +244,7 @@ function BusinessVerificationList({
   onStatusChange: (businessId: string, status: VerificationStatus) => void;
 }) {
   if (businesses.length === 0) {
-    return <p className="text-sm text-zinc-400">No hay veterinarias registradas.</p>;
+    return <p className="rounded-2xl bg-[#f4f6fb] p-4 text-sm font-semibold text-[#687280]">No hay veterinarias registradas.</p>;
   }
 
   return (
@@ -264,7 +281,7 @@ function WalkerVerificationList({
   onStatusChange: (walkerId: string, status: VerificationStatus) => void;
 }) {
   if (walkers.length === 0) {
-    return <p className="text-sm text-zinc-400">No hay walkers registrados.</p>;
+    return <p className="rounded-2xl bg-[#f4f6fb] p-4 text-sm font-semibold text-[#687280]">No hay walkers registrados.</p>;
   }
 
   return (
@@ -309,25 +326,25 @@ function ReviewCard({
   onStatusChange: (status: VerificationStatus) => void;
 }) {
   return (
-    <article className="rounded-lg border border-white/10 bg-zinc-950/35 p-5">
+    <article className="rounded-[1.5rem] border border-[#e5e7eb] bg-[#fbfcff] p-5 transition hover:border-[#6d7cff]/25 hover:bg-white hover:shadow-lg hover:shadow-[#16215c]/6">
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(280px,0.48fr)]">
         <div className="min-w-0">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
-              <h4 className="truncate text-base font-semibold text-white">{title}</h4>
-              <p className="mt-1 text-sm text-zinc-400">{subtitle}</p>
+              <h4 className="truncate text-base font-black text-[#16215c]">{title}</h4>
+              <p className="mt-1 text-sm font-semibold text-[#687280]">{subtitle}</p>
             </div>
             <div className="flex flex-col items-start gap-2 sm:items-end">
-              <span className="text-xs uppercase text-zinc-500">Estado actual</span>
+              <span className="text-xs font-black uppercase tracking-[0.12em] text-[#8b95a4]">Estado actual</span>
               <StatusBadge status={status} />
             </div>
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {details.map((detail) => (
-              <div key={detail.label} className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
-                <p className="text-xs uppercase text-zinc-500">{detail.label}</p>
-                <p className="mt-1 truncate text-sm font-medium text-zinc-200">{detail.value}</p>
+              <div key={detail.label} className="rounded-2xl border border-[#e5e7eb] bg-white p-3">
+                <p className="text-xs font-black uppercase tracking-[0.1em] text-[#8b95a4]">{detail.label}</p>
+                <p className="mt-1 truncate text-sm font-black text-[#16215c]">{detail.value}</p>
               </div>
             ))}
           </div>
@@ -339,18 +356,18 @@ function ReviewCard({
               onChange={onStatusChange}
             />
             {disabled ? (
-              <span className="text-xs text-zinc-500">Actualizando estado...</span>
+              <span className="text-xs font-semibold text-[#687280]">Actualizando estado...</span>
             ) : null}
           </div>
         </div>
 
-        <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+        <div className="rounded-[1.3rem] border border-[#e5e7eb] bg-white p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <FileCheck2 className="h-4 w-4 text-[#9dd0d0]" />
-              <p className="text-sm font-semibold text-white">Documentos</p>
+              <FileCheck2 className="h-4 w-4 text-[#6d7cff]" />
+              <p className="text-sm font-black text-[#16215c]">Documentos</p>
             </div>
-            <span className="text-xs text-zinc-500">{documents.length}</span>
+            <span className="rounded-full bg-[#eef1ff] px-2 py-1 text-xs font-black text-[#6d7cff]">{documents.length}</span>
           </div>
           <DocumentLinks documents={documents} />
         </div>
@@ -361,17 +378,17 @@ function ReviewCard({
 
 function StatusLegend() {
   return (
-    <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+    <div className="flex flex-wrap items-center gap-2 text-xs font-black text-[#687280]">
       <span className="inline-flex items-center gap-1.5">
-        <Clock3 className="h-3.5 w-3.5 text-amber-200" />
+        <Clock3 className="h-3.5 w-3.5 text-[#b56e00]" />
         Pendiente
       </span>
       <span className="inline-flex items-center gap-1.5">
-        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-200" />
+        <CheckCircle2 className="h-3.5 w-3.5 text-[#2f8a5b]" />
         Aprobado
       </span>
       <span className="inline-flex items-center gap-1.5">
-        <XCircle className="h-3.5 w-3.5 text-red-200" />
+        <XCircle className="h-3.5 w-3.5 text-[#b91c1c]" />
         Rechazado
       </span>
     </div>
@@ -381,14 +398,14 @@ function StatusLegend() {
 function VerificationLoading() {
   return (
     <section className="space-y-6">
-      <div className="h-36 animate-pulse rounded-lg bg-white/5" />
+      <div className="h-36 animate-pulse rounded-[1.7rem] bg-white" />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[0, 1, 2, 3].map((item) => (
-          <div key={item} className="h-24 animate-pulse rounded-lg bg-white/5" />
+          <div key={item} className="h-24 animate-pulse rounded-[1.5rem] bg-white" />
         ))}
       </div>
-      <div className="h-80 animate-pulse rounded-lg bg-white/5" />
-      <div className="h-80 animate-pulse rounded-lg bg-white/5" />
+      <div className="h-80 animate-pulse rounded-[1.7rem] bg-white" />
+      <div className="h-80 animate-pulse rounded-[1.7rem] bg-white" />
     </section>
   );
 }

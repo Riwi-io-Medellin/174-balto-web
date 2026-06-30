@@ -7,14 +7,14 @@ const labels: Record<VerificationStatus, string> = {
 };
 
 const styles: Record<VerificationStatus, string> = {
-  pending: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  approved: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  rejected: "border-red-400/30 bg-red-400/10 text-red-200",
+  pending: "border-[#f6c86a]/45 bg-[#fff7e6] text-[#8d5b13]",
+  approved: "border-[#68d391]/45 bg-[#eafbf0] text-[#2f8a5b]",
+  rejected: "border-[#fecaca] bg-[#fff1f2] text-[#b91c1c]",
 };
 
 export function StatusBadge({ status }: { status: VerificationStatus }) {
   return (
-    <span className={`rounded-md border px-3 py-1.5 text-xs font-semibold ${styles[status]}`}>
+    <span className={`rounded-2xl border px-3 py-1.5 text-xs font-black ${styles[status]}`}>
       {labels[status]}
     </span>
   );

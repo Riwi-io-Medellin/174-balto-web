@@ -33,11 +33,11 @@ export function DashboardOverview() {
 
   if (usersQuery.isError) {
     return (
-      <section className="rounded-lg border border-red-400/20 bg-red-400/10 p-6">
-        <h2 className="text-lg font-semibold text-red-100">
+      <section className="rounded-[1.7rem] border border-[#fecaca] bg-[#fff1f2] p-6 shadow-sm">
+        <h2 className="text-lg font-black text-[#b91c1c]">
           No fue posible cargar el dashboard
         </h2>
-        <p className="mt-2 text-sm text-red-100/80">
+        <p className="mt-2 text-sm font-semibold text-[#b91c1c]/80">
           {usersQuery.error instanceof Error
             ? usersQuery.error.message
             : "Intenta nuevamente."}
@@ -45,7 +45,7 @@ export function DashboardOverview() {
         <button
           type="button"
           onClick={() => usersQuery.refetch()}
-          className="mt-5 rounded-md bg-white px-4 py-2 text-sm font-semibold text-zinc-950"
+          className="mt-5 rounded-2xl bg-[#16215c] px-4 py-2 text-sm font-black text-white"
         >
           Reintentar
         </button>
@@ -58,18 +58,24 @@ export function DashboardOverview() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-lg border border-white/10 bg-white/5 p-8">
-        <p className="text-sm uppercase text-zinc-400">Panel operativo</p>
-        <h2 className="mt-3 text-3xl font-semibold text-white">
-          Gestion de usuarios y actividad inicial.
-        </h2>
-        <p className="mt-4 max-w-2xl text-zinc-300">
-          El dashboard consume datos reales disponibles del backend y queda
-          preparado para sumar metricas administrativas dedicadas.
-        </p>
+      <div className="relative overflow-hidden rounded-[2rem] border border-white bg-white p-8 shadow-sm">
+        <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-[#eef1ff] blur-3xl" />
+        <div className="absolute bottom-0 right-40 h-36 w-36 rounded-full bg-[#e8fbf8] blur-3xl" />
+        <div className="relative">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#6d7cff]">
+            Panel operativo
+          </p>
+          <h2 className="mt-3 text-3xl font-black text-[#16215c]">
+            Gestion de usuarios y actividad.
+          </h2>
+          <p className="mt-4 max-w-2xl text-[#526071]">
+            El dashboard consume datos reales disponibles del backend y queda
+            preparado para sumar metricas administrativas dedicadas.
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 rounded-lg border border-white/10 bg-white/5 p-2">
+      <div className="flex flex-wrap gap-2 rounded-[1.5rem] border border-white bg-white p-2 shadow-sm">
         <DashboardTabButton
           active={activeTab === "users"}
           icon={Users2}
@@ -92,24 +98,26 @@ export function DashboardOverview() {
             {metrics.map(({ label, value, icon: Icon }) => (
               <article
                 key={label}
-                className="rounded-lg border border-white/10 bg-white/5 p-5"
+                className="rounded-[1.5rem] border border-white bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#16215c]/6"
               >
-                <Icon className="h-5 w-5 text-[#7cb7b7]" />
-                <p className="mt-4 text-2xl font-semibold text-white">{value}</p>
-                <p className="mt-1 text-sm text-zinc-400">{label}</p>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eef1ff] text-[#6d7cff]">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <p className="mt-4 text-2xl font-black text-[#16215c]">{value}</p>
+                <p className="mt-1 text-sm font-semibold text-[#687280]">{label}</p>
               </article>
             ))}
           </div>
 
-          <section className="rounded-lg border border-white/10 bg-white/5 p-6">
+          <section className="rounded-[1.7rem] border border-white bg-white p-6 shadow-sm">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h3 className="text-lg font-semibold text-white">Usuarios</h3>
-                <p className="mt-1 text-sm text-zinc-400">
+                <h3 className="text-lg font-black text-[#16215c]">Usuarios</h3>
+                <p className="mt-1 text-sm font-semibold text-[#687280]">
                   Gestion inicial basada en el endpoint existente de usuarios.
                 </p>
               </div>
-              <span className="rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">
+              <span className="rounded-2xl border border-[#68d391]/45 bg-[#eafbf0] px-3 py-1 text-sm font-black text-[#2f8a5b]">
                 {users.length} registros
               </span>
             </div>
@@ -136,10 +144,10 @@ function DashboardTabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-medium transition ${
+      className={`inline-flex h-11 items-center gap-2 rounded-2xl px-4 text-sm font-black transition ${
         active
-          ? "bg-white text-zinc-950"
-          : "text-zinc-300 hover:bg-white/10 hover:text-white"
+          ? "bg-[#6d7cff] text-white shadow-lg shadow-[#6d7cff]/18"
+          : "text-[#687280] hover:bg-[#eef1ff] hover:text-[#16215c]"
       }`}
     >
       <Icon className="h-4 w-4" />
@@ -151,13 +159,13 @@ function DashboardTabButton({
 function DashboardLoading() {
   return (
     <section className="space-y-6">
-      <div className="h-44 animate-pulse rounded-lg bg-white/5" />
+      <div className="h-44 animate-pulse rounded-[2rem] bg-white" />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[0, 1, 2, 3].map((item) => (
-          <div key={item} className="h-32 animate-pulse rounded-lg bg-white/5" />
+          <div key={item} className="h-32 animate-pulse rounded-[1.5rem] bg-white" />
         ))}
       </div>
-      <div className="h-80 animate-pulse rounded-lg bg-white/5" />
+      <div className="h-80 animate-pulse rounded-[1.7rem] bg-white" />
     </section>
   );
 }

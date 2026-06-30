@@ -446,7 +446,7 @@ export default function LandingPage() {
             <div className="absolute bottom-0 right-6 max-w-xs rounded-[2rem] bg-[#16215c] p-5 text-white shadow-2xl shadow-[#16215c]/20">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-[#5fd6cc]" />
-                <p className="text-sm font-black">Balto Copilot</p>
+                <p className="text-sm font-black">Balto IA</p>
               </div>
               <p className="mt-3 text-sm leading-6 text-white/80">
                 Bruno tuvo una ruta intensa. Hoy conviene una caminata mas

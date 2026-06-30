@@ -7,11 +7,13 @@ import { Activity, MapPin, PawPrint, ShieldCheck, Users2 } from "lucide-react";
 import { VerificationPanel } from "@/features/verification/components/verification-panel";
 import { ApiError, listUsers } from "@/features/users/api";
 import { UsersTable } from "@/features/users/components/users-table";
+import { useLanguage, type TranslationKey } from "@/features/i18n";
 
 type DashboardTab = "users" | "verification";
 
 export function DashboardOverview() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<DashboardTab>("users");
   const usersQuery = useQuery({
     queryKey: ["admin", "users"],
@@ -35,26 +37,24 @@ export function DashboardOverview() {
     return (
       <section className="rounded-[1.7rem] border border-[#fecaca] bg-[#fff1f2] p-6 shadow-sm">
         <h2 className="text-lg font-black text-[#b91c1c]">
-          No fue posible cargar el dashboard
+          {t("dashboard.loadErrorTitle")}
         </h2>
         <p className="mt-2 text-sm font-semibold text-[#b91c1c]/80">
-          {usersQuery.error instanceof Error
-            ? usersQuery.error.message
-            : "Intenta nuevamente."}
+          {t("dashboard.genericRetry")}
         </p>
         <button
           type="button"
           onClick={() => usersQuery.refetch()}
           className="mt-5 rounded-2xl bg-[#16215c] px-4 py-2 text-sm font-black text-white"
         >
-          Reintentar
+          {t("common.retry")}
         </button>
       </section>
     );
   }
 
   const users = usersQuery.data;
-  const metrics = buildMetrics(users);
+  const metrics = buildMetrics(users, t);
 
   return (
     <section className="space-y-6">
@@ -63,14 +63,13 @@ export function DashboardOverview() {
         <div className="absolute bottom-0 right-40 h-36 w-36 rounded-full bg-[#e8fbf8] blur-3xl" />
         <div className="relative">
           <p className="text-sm font-black uppercase tracking-[0.18em] text-[#6d7cff]">
-            Panel operativo
+            {t("dashboard.eyebrow")}
           </p>
           <h2 className="mt-3 text-3xl font-black text-[#16215c]">
-            Gestion de usuarios y actividad.
+            {t("dashboard.title")}
           </h2>
           <p className="mt-4 max-w-2xl text-[#526071]">
-            El dashboard consume datos reales disponibles del backend y queda
-            preparado para sumar metricas administrativas dedicadas.
+            {t("dashboard.description")}
           </p>
         </div>
       </div>
@@ -79,13 +78,13 @@ export function DashboardOverview() {
         <DashboardTabButton
           active={activeTab === "users"}
           icon={Users2}
-          label="Usuarios"
+          label={t("dashboard.usersTab")}
           onClick={() => setActiveTab("users")}
         />
         <DashboardTabButton
           active={activeTab === "verification"}
           icon={ShieldCheck}
-          label="Verificaciones"
+          label={t("dashboard.verificationTab")}
           onClick={() => setActiveTab("verification")}
         />
       </div>
@@ -112,13 +111,15 @@ export function DashboardOverview() {
           <section className="rounded-[1.7rem] border border-white bg-white p-6 shadow-sm">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h3 className="text-lg font-black text-[#16215c]">Usuarios</h3>
+                <h3 className="text-lg font-black text-[#16215c]">
+                  {t("dashboard.usersTitle")}
+                </h3>
                 <p className="mt-1 text-sm font-semibold text-[#687280]">
-                  Gestion inicial basada en el endpoint existente de usuarios.
+                  {t("dashboard.usersDescription")}
                 </p>
               </div>
               <span className="rounded-2xl border border-[#68d391]/45 bg-[#eafbf0] px-3 py-1 text-sm font-black text-[#2f8a5b]">
-                {users.length} registros
+                {users.length} {t("common.records")}
               </span>
             </div>
             <UsersTable users={users} />
@@ -170,7 +171,10 @@ function DashboardLoading() {
   );
 }
 
-function buildMetrics(users: Awaited<ReturnType<typeof listUsers>>) {
+function buildMetrics(
+  users: Awaited<ReturnType<typeof listUsers>>,
+  t: (key: TranslationKey) => string,
+) {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -185,9 +189,9 @@ function buildMetrics(users: Awaited<ReturnType<typeof listUsers>>) {
   const withPhoto = users.filter((user) => Boolean(user.photoUrl)).length;
 
   return [
-    { label: "Usuarios", value: String(users.length), icon: Users2 },
-    { label: "Nuevos este mes", value: String(newThisMonth), icon: Activity },
-    { label: "Con ubicacion", value: String(withLocation), icon: MapPin },
-    { label: "Con foto", value: String(withPhoto), icon: PawPrint },
+    { label: t("dashboard.metricUsers"), value: String(users.length), icon: Users2 },
+    { label: t("dashboard.metricNewMonth"), value: String(newThisMonth), icon: Activity },
+    { label: t("dashboard.metricWithLocation"), value: String(withLocation), icon: MapPin },
+    { label: t("dashboard.metricWithPhoto"), value: String(withPhoto), icon: PawPrint },
   ];
 }

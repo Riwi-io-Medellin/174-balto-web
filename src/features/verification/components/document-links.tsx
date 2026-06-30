@@ -1,4 +1,5 @@
 import { ExternalLink, FileText } from "lucide-react";
+import { useLanguage } from "@/features/i18n";
 import type { VerificationDocument } from "../types";
 
 export function DocumentLinks({
@@ -6,8 +7,14 @@ export function DocumentLinks({
 }: {
   documents: VerificationDocument[];
 }) {
+  const { language, t } = useLanguage();
+
   if (documents.length === 0) {
-    return <span className="text-sm font-semibold text-[#8b95a4]">Sin documentos</span>;
+    return (
+      <span className="text-sm font-semibold text-[#8b95a4]">
+        {t("verification.noDocuments")}
+      </span>
+    );
   }
 
   return (
@@ -27,7 +34,7 @@ export function DocumentLinks({
                 {document.documentType}
               </span>
               <span className="mt-0.5 block text-xs font-semibold text-[#8b95a4]">
-                {formatDate(document.createdAt)}
+                {formatDate(document.createdAt, language)}
               </span>
             </span>
           </span>
@@ -38,8 +45,8 @@ export function DocumentLinks({
   );
 }
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("es-CO", {
+function formatDate(value: string, language: "es" | "en") {
+  return new Intl.DateTimeFormat(language === "es" ? "es-CO" : "en-US", {
     year: "numeric",
     month: "short",
     day: "2-digit",

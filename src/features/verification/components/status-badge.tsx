@@ -1,9 +1,10 @@
+import { useLanguage, type TranslationKey } from "@/features/i18n";
 import type { VerificationStatus } from "../types";
 
-const labels: Record<VerificationStatus, string> = {
-  pending: "Pendiente",
-  approved: "Aprobado",
-  rejected: "Rechazado",
+const labels: Record<VerificationStatus, TranslationKey> = {
+  pending: "verification.pending",
+  approved: "verification.approved",
+  rejected: "verification.rejected",
 };
 
 const styles: Record<VerificationStatus, string> = {
@@ -13,9 +14,11 @@ const styles: Record<VerificationStatus, string> = {
 };
 
 export function StatusBadge({ status }: { status: VerificationStatus }) {
+  const { t } = useLanguage();
+
   return (
     <span className={`rounded-2xl border px-3 py-1.5 text-xs font-black ${styles[status]}`}>
-      {labels[status]}
+      {t(labels[status])}
     </span>
   );
 }

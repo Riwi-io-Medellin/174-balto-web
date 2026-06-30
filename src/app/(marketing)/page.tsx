@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   Bell,
@@ -15,6 +17,7 @@ import {
   Stethoscope,
   Users,
 } from "lucide-react";
+import { useLanguage } from "@/features/i18n";
 
 const apkUrl = process.env.NEXT_PUBLIC_APK_URL ?? "/downloads/balto.apk";
 
@@ -30,40 +33,6 @@ const images = {
   vet:
     "https://images.pexels.com/photos/6235020/pexels-photo-6235020.jpeg?auto=compress&cs=tinysrgb&w=1200",
 };
-
-const featureCards = [
-  {
-    title: "Agenda paseos sin enredos",
-    description:
-      "Elige un walker, revisa su perfil y coordina la rutina de tu mascota desde la app.",
-    icon: CalendarCheck,
-  },
-  {
-    title: "Sigue la ruta en vivo",
-    description:
-      "Mira el recorrido, la duracion y el estado del paseo mientras sucede.",
-    icon: Navigation,
-  },
-  {
-    title: "Walkers verificados",
-    description:
-      "Perfiles revisados para que tu perro salga con alguien de confianza.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Servicios cerca de ti",
-    description:
-      "Encuentra veterinarias y aliados pet care para completar el cuidado.",
-    icon: Stethoscope,
-  },
-];
-
-const careHighlights = [
-  "Perfil de mascota con informacion importante",
-  "Recordatorios y senales de bienestar",
-  "Historial de paseos y actividad",
-  "Comunidad para duenos, walkers y negocios",
-];
 
 function BrandMark({ light = false }: { light?: boolean }) {
   return (
@@ -115,12 +84,14 @@ function PetPhoto({
 }
 
 function AppPreview() {
+  const { t } = useLanguage();
+
   return (
     <div className="relative mx-auto w-full max-w-[330px]">
       <div className="absolute -left-14 top-10 hidden h-36 w-36 rotate-[-8deg] overflow-hidden border-[8px] border-white bg-white shadow-2xl shadow-[#16215c]/15 md:block">
         <PetPhoto
           src={images.cat}
-          alt="Gato tranquilo en casa"
+          alt={t("marketing.altCatHome")}
           shape="38% 62% 45% 55% / 46% 42% 58% 54%"
         />
       </div>
@@ -131,9 +102,11 @@ function AppPreview() {
             <CheckCircle2 className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-xs font-black text-[#16215c]">Paseo seguro</p>
+            <p className="text-xs font-black text-[#16215c]">
+              {t("marketing.previewSafeWalk")}
+            </p>
             <p className="text-[11px] font-semibold text-[#687280]">
-              walker verificado
+              {t("marketing.previewVerifiedWalker")}
             </p>
           </div>
         </div>
@@ -151,15 +124,15 @@ function AppPreview() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[#6d7cff]">
-                  Ahora
+                  {t("marketing.previewNow")}
                 </p>
                 <h2 className="mt-1 text-xl font-black text-[#16215c]">
-                  Bruno esta paseando
+                  {t("marketing.previewWalking")}
                 </h2>
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eafbf0] px-2.5 py-1 text-[11px] font-black text-[#2f8a5b]">
                 <span className="h-2 w-2 rounded-full bg-[#68d391] motion-safe:animate-pulse" />
-                En vivo
+                {t("marketing.previewLive")}
               </span>
             </div>
 
@@ -211,14 +184,14 @@ function AppPreview() {
               </svg>
               <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-black text-[#16215c] shadow-sm">
                 <MapPin className="h-3.5 w-3.5 text-[#68d391]" />
-                Parque Laureles
+                {t("marketing.previewPark")}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl border border-[#e5e7eb] bg-white p-3">
                 <p className="text-[11px] font-semibold text-[#687280]">
-                  Tiempo
+                  {t("marketing.previewTime")}
                 </p>
                 <p className="mt-1 text-lg font-black text-[#16215c]">
                   28:47
@@ -226,7 +199,7 @@ function AppPreview() {
               </div>
               <div className="rounded-2xl border border-[#e5e7eb] bg-white p-3">
                 <p className="text-[11px] font-semibold text-[#687280]">
-                  Distancia
+                  {t("marketing.previewDistance")}
                 </p>
                 <p className="mt-1 text-lg font-black text-[#16215c]">
                   2.45 km
@@ -241,10 +214,10 @@ function AppPreview() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-black text-[#16215c]">
-                    Ana Garcia
+                    {t("marketing.previewWalker")}
                   </p>
                   <p className="text-xs text-[#687280]">
-                    Paseadora verificada · 4.9 estrellas
+                    {t("marketing.previewWalkerRating")}
                   </p>
                 </div>
                 <Star className="h-5 w-5 fill-[#f6c86a] text-[#f6c86a]" />
@@ -258,6 +231,68 @@ function AppPreview() {
 }
 
 export default function LandingPage() {
+  const { t } = useLanguage();
+  const featureCards = [
+    {
+      title: t("marketing.featureScheduleTitle"),
+      description: t("marketing.featureScheduleText"),
+      icon: CalendarCheck,
+    },
+    {
+      title: t("marketing.featureRouteTitle"),
+      description: t("marketing.featureRouteText"),
+      icon: Navigation,
+    },
+    {
+      title: t("marketing.featureVerifiedTitle"),
+      description: t("marketing.featureVerifiedText"),
+      icon: ShieldCheck,
+    },
+    {
+      title: t("marketing.featureServicesTitle"),
+      description: t("marketing.featureServicesText"),
+      icon: Stethoscope,
+    },
+  ];
+  const careHighlights = [
+    t("marketing.carePetProfile"),
+    t("marketing.careReminders"),
+    t("marketing.careHistory"),
+    t("marketing.careCommunity"),
+  ];
+  const heroStats = [
+    [t("marketing.statLiveRouteTitle"), t("marketing.statLiveRouteText")],
+    [t("marketing.statKycTitle"), t("marketing.statKycText")],
+    [t("marketing.statPetCareTitle"), t("marketing.statPetCareText")],
+  ];
+  const routeSteps = [
+    t("marketing.routeHome"),
+    t("marketing.routePark"),
+    t("marketing.routeBack"),
+  ];
+  const serviceCards = [
+    {
+      title: t("marketing.clearProfilesTitle"),
+      text: t("marketing.clearProfilesText"),
+      icon: Users,
+    },
+    {
+      title: t("marketing.usefulRemindersTitle"),
+      text: t("marketing.usefulRemindersText"),
+      icon: Bell,
+    },
+    {
+      title: t("marketing.trustFirstTitle"),
+      text: t("marketing.trustFirstText"),
+      icon: ShieldCheck,
+    },
+    {
+      title: t("marketing.allInOneTitle"),
+      text: t("marketing.allInOneText"),
+      icon: HeartHandshake,
+    },
+  ];
+
   return (
     <main className="overflow-hidden bg-[#fbfcff] text-[#16215c]">
       <section
@@ -273,16 +308,14 @@ export default function LandingPage() {
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-[#6d7cff]/15 bg-white px-3 py-2 text-sm font-black text-[#6d7cff] shadow-sm">
             <Sparkles className="h-4 w-4" />
-            Cuidado para mascotas, claro y conectado
+            {t("marketing.badge")}
           </div>
 
           <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[1.02] tracking-normal text-[#16215c] sm:text-6xl lg:text-7xl">
-            Paseos seguros y cuidado diario para quienes mas quieres.
+            {t("marketing.heroTitle")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#526071]">
-            Balto reune paseadores verificados, seguimiento en vivo,
-            veterinarias cercanas y recordatorios utiles para que cada mascota
-            este acompanada antes, durante y despues del paseo.
+            {t("marketing.heroDescription")}
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -291,16 +324,12 @@ export default function LandingPage() {
               className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#6d7cff] px-6 text-base font-black text-white shadow-xl shadow-[#6d7cff]/25 transition hover:-translate-y-1 hover:bg-[#5a69f0]"
             >
               <Download className="h-5 w-5" />
-              Descargar APK
+              {t("common.downloadApk")}
             </a>
           </div>
 
           <div className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
-            {[
-              ["Ruta en vivo", "sabes donde esta tu perro"],
-              ["Walkers KYC", "perfiles revisados"],
-              ["Pet care", "servicios cerca de casa"],
-            ].map(([title, text]) => (
+            {heroStats.map(([title, text]) => (
               <div
                 key={title}
                 className="rounded-3xl border border-white bg-white/75 p-4 shadow-sm backdrop-blur"
@@ -318,7 +347,7 @@ export default function LandingPage() {
           <div className="absolute -right-2 top-1 hidden h-40 w-40 rotate-6 overflow-hidden border-[10px] border-white shadow-2xl shadow-[#16215c]/12 sm:block">
             <PetPhoto
               src={images.puppies}
-              alt="Cachorros jugando"
+              alt={t("marketing.altPuppies")}
               shape="55% 45% 47% 53% / 48% 58% 42% 52%"
             />
           </div>
@@ -332,7 +361,7 @@ export default function LandingPage() {
             <div className="absolute left-0 top-4 h-[360px] w-[74%] overflow-hidden shadow-2xl shadow-[#16215c]/12">
               <PetPhoto
                 src={images.walking}
-                alt="Persona paseando con un perro"
+                alt={t("marketing.altWalking")}
                 shape="33% 67% 50% 50% / 48% 38% 62% 52%"
               />
             </div>
@@ -340,14 +369,14 @@ export default function LandingPage() {
               <div className="rounded-[1.4rem] bg-[#eafbf0] p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-black text-[#2f8a5b]">
-                    Paseo activo
+                    {t("marketing.walkStatus")}
                   </span>
                   <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#2f8a5b]">
-                    Live
+                    {t("marketing.live")}
                   </span>
                 </div>
                 <div className="mt-5 space-y-3">
-                  {["Casa", "Parque", "Regreso"].map((item, index) => (
+                  {routeSteps.map((item, index) => (
                     <div key={item} className="flex items-center gap-3">
                       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-sm font-black text-[#68d391]">
                         {index + 1}
@@ -367,15 +396,13 @@ export default function LandingPage() {
 
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#68d391]">
-              Paseos con tranquilidad
+              {t("marketing.walkEyebrow")}
             </p>
             <h2 className="mt-3 text-4xl font-black tracking-normal text-[#16215c] sm:text-5xl">
-              Tu perro sale a caminar. Tu sigues todo desde Balto.
+              {t("marketing.walkTitle")}
             </h2>
             <p className="mt-5 text-lg leading-8 text-[#526071]">
-              Agenda paseos, confirma quien lo acompana y revisa la ruta sin
-              escribir mil mensajes. La app pone lo importante en primer plano:
-              seguridad, tiempo, distancia y estado del recorrido.
+              {t("marketing.walkDescription")}
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -402,15 +429,13 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#5fd6cc]">
-              Bienestar todos los dias
+              {t("marketing.careEyebrow")}
             </p>
             <h2 className="mt-3 text-4xl font-black tracking-normal text-[#16215c] sm:text-5xl">
-              No es solo sacar a pasear. Es cuidar una rutina.
+              {t("marketing.careTitle")}
             </h2>
             <p className="mt-5 text-lg leading-8 text-[#526071]">
-              Balto ayuda a tener presente la informacion de cada mascota,
-              recordar cuidados y mirar el historial para tomar mejores
-              decisiones en casa.
+              {t("marketing.careDescription")}
             </p>
 
             <div className="mt-8 space-y-3">
@@ -432,25 +457,24 @@ export default function LandingPage() {
             <div className="absolute right-0 top-0 h-[330px] w-[68%] overflow-hidden shadow-2xl shadow-[#16215c]/12">
               <PetPhoto
                 src={images.cat}
-                alt="Gato en una casa tranquila"
+                alt={t("marketing.altCat")}
                 shape="58% 42% 60% 40% / 44% 54% 46% 56%"
               />
             </div>
             <div className="absolute bottom-8 left-0 h-[300px] w-[58%] overflow-hidden border-[10px] border-white shadow-2xl shadow-[#16215c]/12">
               <PetPhoto
                 src={images.puppies}
-                alt="Cachorros acompanados"
+                alt={t("marketing.altPuppies")}
                 shape="37% 63% 44% 56% / 52% 38% 62% 48%"
               />
             </div>
             <div className="absolute bottom-0 right-6 max-w-xs rounded-[2rem] bg-[#16215c] p-5 text-white shadow-2xl shadow-[#16215c]/20">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-[#5fd6cc]" />
-                <p className="text-sm font-black">Balto IA</p>
+                <p className="text-sm font-black">{t("marketing.aiLabel")}</p>
               </div>
               <p className="mt-3 text-sm leading-6 text-white/80">
-                Bruno tuvo una ruta intensa. Hoy conviene una caminata mas
-                suave y agua al llegar a casa.
+                {t("marketing.aiText")}
               </p>
             </div>
           </div>
@@ -462,16 +486,14 @@ export default function LandingPage() {
           <div className="grid items-end gap-8 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#f6c86a]">
-                Servicios pet care
+                {t("marketing.servicesEyebrow")}
               </p>
               <h2 className="mt-3 text-4xl font-black tracking-normal text-[#16215c] sm:text-5xl">
-                Veterinarias y aliados para completar el cuidado.
+                {t("marketing.servicesTitle")}
               </h2>
             </div>
             <p className="text-lg leading-8 text-[#526071]">
-              Cuando necesitas algo mas que un paseo, Balto te acerca a
-              negocios y servicios para mascotas, con informacion clara para
-              decidir mejor.
+              {t("marketing.servicesDescription")}
             </p>
           </div>
 
@@ -479,45 +501,23 @@ export default function LandingPage() {
             <div className="relative min-h-[440px] overflow-hidden rounded-[2.5rem] bg-[#fcf8ee] p-6">
               <PetPhoto
                 src={images.vet}
-                alt="Veterinaria revisando a un perro"
+                alt={t("marketing.altVet")}
                 className="absolute inset-6 h-[calc(100%-3rem)] w-[calc(100%-3rem)]"
                 shape="36% 64% 52% 48% / 52% 46% 54% 48%"
               />
               <div className="absolute bottom-8 left-8 max-w-sm rounded-[1.7rem] bg-white/92 p-5 shadow-xl backdrop-blur">
                 <Stethoscope className="h-6 w-6 text-[#b56e00]" />
                 <h3 className="mt-3 text-xl font-black text-[#16215c]">
-                  Encuentra ayuda cerca
+                  {t("marketing.servicesCardTitle")}
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-[#687280]">
-                  Veterinarias, servicios y perfiles para cuidar mejor a tu
-                  mascota cuando lo necesite.
+                  {t("marketing.servicesCardText")}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-5">
-              {[
-                {
-                  title: "Perfiles claros",
-                  text: "Mira servicios, informacion basica y disponibilidad.",
-                  icon: Users,
-                },
-                {
-                  title: "Recordatorios utiles",
-                  text: "Ten presente lo importante sin saturarte.",
-                  icon: Bell,
-                },
-                {
-                  title: "Confianza primero",
-                  text: "La app prioriza perfiles revisados y experiencias seguras.",
-                  icon: ShieldCheck,
-                },
-                {
-                  title: "Todo en un lugar",
-                  text: "Paseos, mascota, historial y servicios conectados.",
-                  icon: HeartHandshake,
-                },
-              ].map(({ title, text, icon: Icon }) => (
+              {serviceCards.map(({ title, text, icon: Icon }) => (
                 <article
                   key={title}
                   className="rounded-[1.7rem] border border-[#e5e7eb] bg-white p-5 shadow-sm"
@@ -542,11 +542,10 @@ export default function LandingPage() {
             <div className="p-6 sm:p-10">
               <BrandMark light />
               <h2 className="mt-8 max-w-3xl text-4xl font-black tracking-normal sm:text-5xl">
-                Lleva Balto en el celular y empieza a cuidar mejor cada salida.
+                {t("marketing.apkTitle")}
               </h2>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-white/82">
-                Descarga el APK para Android y prueba una experiencia pensada
-                para duenos de mascotas, paseadores y servicios pet care.
+                {t("marketing.apkDescription")}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -554,7 +553,7 @@ export default function LandingPage() {
                   className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-base font-black text-[#6d7cff] shadow-lg transition hover:-translate-y-1"
                 >
                   <Download className="h-5 w-5" />
-                  Descargar APK
+                  {t("common.downloadApk")}
                 </a>
               </div>
             </div>
@@ -562,7 +561,7 @@ export default function LandingPage() {
             <div className="relative min-h-[460px] bg-[#eef1ff]">
               <PetPhoto
                 src={images.hero}
-                alt="Persona cuidando una mascota"
+                alt={t("marketing.altHero")}
                 className="absolute inset-0"
                 shape="0"
               />
@@ -577,9 +576,11 @@ export default function LandingPage() {
                     className="rounded-2xl"
                   />
                   <div>
-                    <p className="text-xl font-black">balto.apk</p>
+                    <p className="text-xl font-black">
+                      {t("marketing.apkFileName")}
+                    </p>
                     <p className="text-sm font-semibold text-[#687280]">
-                      Android · instalacion directa
+                      {t("marketing.apkInstall")}
                     </p>
                   </div>
                 </div>

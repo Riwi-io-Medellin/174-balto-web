@@ -19,6 +19,7 @@ import {
   updateBusinessVerificationStatus,
   updateWalkerVerificationStatus,
 } from "../api";
+import { useLanguage } from "@/features/i18n";
 import type {
   BusinessVerification,
   VerificationStatus,
@@ -31,6 +32,7 @@ import { StatusBadge } from "./status-badge";
 export function VerificationPanel() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const businessesQuery = useQuery({
     queryKey: ["admin", "verification", "businesses"],
     queryFn: listBusinessVerifications,
@@ -86,14 +88,13 @@ export function VerificationPanel() {
   }
 
   if (businessesQuery.isError || walkersQuery.isError) {
-    const error = businessesQuery.error ?? walkersQuery.error;
     return (
       <section className="rounded-[1.7rem] border border-[#fecaca] bg-[#fff1f2] p-6 shadow-sm">
         <h2 className="text-lg font-black text-[#b91c1c]">
-          No fue posible cargar las verificaciones
+          {t("verification.loadErrorTitle")}
         </h2>
         <p className="mt-2 text-sm font-semibold text-[#b91c1c]/80">
-          {error instanceof Error ? error.message : "Intenta nuevamente."}
+          {t("dashboard.genericRetry")}
         </p>
       </section>
     );
@@ -108,17 +109,18 @@ export function VerificationPanel() {
               <ShieldCheck className="h-6 w-6" />
             </div>
             <h3 className="mt-4 text-xl font-black text-[#16215c]">
-              Revision manual de servicios
+              {t("verification.title")}
             </h3>
             <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#687280]">
-              Revisa el estado actual, abre los documentos cargados y decide si
-              una veterinaria o walker queda aprobado o rechazado.
+              {t("verification.description")}
             </p>
           </div>
           <div className="rounded-2xl border border-[#68d391]/45 bg-[#eafbf0] px-4 py-3">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#2f8a5b]">Regla operativa</p>
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#2f8a5b]">
+              {t("verification.ruleLabel")}
+            </p>
             <p className="mt-1 text-sm font-black text-[#153f2a]">
-              Solo aprobado queda activo en la app
+              {t("verification.ruleText")}
             </p>
           </div>
         </div>
@@ -133,9 +135,11 @@ export function VerificationPanel() {
               <Building2 className="h-5 w-5" />
             </span>
             <div>
-              <h3 className="text-lg font-black text-[#16215c]">Veterinarias</h3>
+              <h3 className="text-lg font-black text-[#16215c]">
+                {t("verification.businesses")}
+              </h3>
               <p className="text-sm font-semibold text-[#687280]">
-                Documentos legales y datos de contacto del negocio.
+                {t("verification.businessesDescription")}
               </p>
             </div>
           </div>
@@ -158,9 +162,11 @@ export function VerificationPanel() {
               <UserCheck className="h-5 w-5" />
             </span>
             <div>
-              <h3 className="text-lg font-black text-[#16215c]">Walkers</h3>
+              <h3 className="text-lg font-black text-[#16215c]">
+                {t("verification.walkers")}
+              </h3>
               <p className="text-sm font-semibold text-[#687280]">
-                Cedula, resultado KYC y documentos para revision manual.
+                {t("verification.walkersDescription")}
               </p>
             </div>
           </div>
@@ -186,6 +192,7 @@ function VerificationSummary({
   businesses: BusinessVerification[];
   walkers: WalkerVerification[];
 }) {
+  const { t } = useLanguage();
   const pendingBusinesses = businesses.filter(
     (business) => business.verificationStatus === "pending",
   ).length;
@@ -195,10 +202,30 @@ function VerificationSummary({
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <SummaryCard icon={Building2} label="Veterinarias" value={businesses.length} tone="sand" />
-      <SummaryCard icon={Clock3} label="Veterinarias pendientes" value={pendingBusinesses} tone="amber" />
-      <SummaryCard icon={UserCheck} label="Walkers" value={walkers.length} tone="green" />
-      <SummaryCard icon={Clock3} label="Walkers pendientes" value={pendingWalkers} tone="blue" />
+      <SummaryCard
+        icon={Building2}
+        label={t("verification.businesses")}
+        value={businesses.length}
+        tone="sand"
+      />
+      <SummaryCard
+        icon={Clock3}
+        label={t("verification.pendingBusinesses")}
+        value={pendingBusinesses}
+        tone="amber"
+      />
+      <SummaryCard
+        icon={UserCheck}
+        label={t("verification.walkers")}
+        value={walkers.length}
+        tone="green"
+      />
+      <SummaryCard
+        icon={Clock3}
+        label={t("verification.pendingWalkers")}
+        value={pendingWalkers}
+        tone="blue"
+      />
     </div>
   );
 }
@@ -243,8 +270,14 @@ function BusinessVerificationList({
   isPending: boolean;
   onStatusChange: (businessId: string, status: VerificationStatus) => void;
 }) {
+  const { t } = useLanguage();
+
   if (businesses.length === 0) {
-    return <p className="rounded-2xl bg-[#f4f6fb] p-4 text-sm font-semibold text-[#687280]">No hay veterinarias registradas.</p>;
+    return (
+      <p className="rounded-2xl bg-[#f4f6fb] p-4 text-sm font-semibold text-[#687280]">
+        {t("verification.noBusinesses")}
+      </p>
+    );
   }
 
   return (
@@ -256,9 +289,15 @@ function BusinessVerificationList({
           subtitle={`NIT ${business.nit} · ${business.email}`}
           status={business.verificationStatus}
           details={[
-            { label: "Tipo", value: business.type ?? "Sin tipo" },
-            { label: "Ubicacion", value: business.location ?? "Sin ubicacion" },
-            { label: "Telefono", value: String(business.phone) },
+            {
+              label: t("verification.businessType"),
+              value: business.type ?? t("verification.noBusinessType"),
+            },
+            {
+              label: t("verification.location"),
+              value: business.location ?? t("verification.noLocation"),
+            },
+            { label: t("verification.phone"), value: String(business.phone) },
           ]}
           documents={business.documents}
           disabled={isPending && pendingId === business.id}
@@ -280,8 +319,14 @@ function WalkerVerificationList({
   isPending: boolean;
   onStatusChange: (walkerId: string, status: VerificationStatus) => void;
 }) {
+  const { t } = useLanguage();
+
   if (walkers.length === 0) {
-    return <p className="rounded-2xl bg-[#f4f6fb] p-4 text-sm font-semibold text-[#687280]">No hay walkers registrados.</p>;
+    return (
+      <p className="rounded-2xl bg-[#f4f6fb] p-4 text-sm font-semibold text-[#687280]">
+        {t("verification.noWalkers")}
+      </p>
+    );
   }
 
   return (
@@ -290,14 +335,25 @@ function WalkerVerificationList({
         <ReviewCard
           key={walker.id}
           title={walker.fullName}
-          subtitle={`${walker.workLocation ?? "Sin zona"} · ${
-            walker.isAcceptingBookings ? "Acepta reservas" : "No acepta reservas"
+          subtitle={`${walker.workLocation ?? t("verification.noZone")} · ${
+            walker.isAcceptingBookings
+              ? t("verification.acceptsBookings")
+              : t("verification.noBookings")
           }`}
           status={walker.verificationStatus}
           details={[
-            { label: "Nombre KYC", value: walker.documentName ?? "No extraido" },
-            { label: "Documento", value: walker.documentNumber ?? "No extraido" },
-            { label: "Experiencia", value: walker.experience ?? "Sin registro" },
+            {
+              label: t("verification.kycName"),
+              value: walker.documentName ?? t("verification.noExtracted"),
+            },
+            {
+              label: t("verification.document"),
+              value: walker.documentNumber ?? t("verification.noExtracted"),
+            },
+            {
+              label: t("verification.experience"),
+              value: walker.experience ?? t("verification.noExperience"),
+            },
           ]}
           documents={walker.documents}
           disabled={isPending && pendingId === walker.id}
@@ -325,6 +381,8 @@ function ReviewCard({
   disabled: boolean;
   onStatusChange: (status: VerificationStatus) => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <article className="rounded-[1.5rem] border border-[#e5e7eb] bg-[#fbfcff] p-5 transition hover:border-[#6d7cff]/25 hover:bg-white hover:shadow-lg hover:shadow-[#16215c]/6">
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(280px,0.48fr)]">
@@ -335,7 +393,9 @@ function ReviewCard({
               <p className="mt-1 text-sm font-semibold text-[#687280]">{subtitle}</p>
             </div>
             <div className="flex flex-col items-start gap-2 sm:items-end">
-              <span className="text-xs font-black uppercase tracking-[0.12em] text-[#8b95a4]">Estado actual</span>
+              <span className="text-xs font-black uppercase tracking-[0.12em] text-[#8b95a4]">
+                {t("verification.currentStatus")}
+              </span>
               <StatusBadge status={status} />
             </div>
           </div>
@@ -356,7 +416,9 @@ function ReviewCard({
               onChange={onStatusChange}
             />
             {disabled ? (
-              <span className="text-xs font-semibold text-[#687280]">Actualizando estado...</span>
+              <span className="text-xs font-semibold text-[#687280]">
+                {t("verification.updatingStatus")}
+              </span>
             ) : null}
           </div>
         </div>
@@ -365,7 +427,9 @@ function ReviewCard({
           <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <FileCheck2 className="h-4 w-4 text-[#6d7cff]" />
-              <p className="text-sm font-black text-[#16215c]">Documentos</p>
+              <p className="text-sm font-black text-[#16215c]">
+                {t("verification.documents")}
+              </p>
             </div>
             <span className="rounded-full bg-[#eef1ff] px-2 py-1 text-xs font-black text-[#6d7cff]">{documents.length}</span>
           </div>
@@ -377,19 +441,21 @@ function ReviewCard({
 }
 
 function StatusLegend() {
+  const { t } = useLanguage();
+
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs font-black text-[#687280]">
       <span className="inline-flex items-center gap-1.5">
         <Clock3 className="h-3.5 w-3.5 text-[#b56e00]" />
-        Pendiente
+        {t("verification.pending")}
       </span>
       <span className="inline-flex items-center gap-1.5">
         <CheckCircle2 className="h-3.5 w-3.5 text-[#2f8a5b]" />
-        Aprobado
+        {t("verification.approved")}
       </span>
       <span className="inline-flex items-center gap-1.5">
         <XCircle className="h-3.5 w-3.5 text-[#b91c1c]" />
-        Rechazado
+        {t("verification.rejected")}
       </span>
     </div>
   );

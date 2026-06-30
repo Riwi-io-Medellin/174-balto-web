@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     default: "Balto",
     template: "%s | Balto",
   },
-  description: "Landing publica de descarga para la app movil Balto.",
+  description: "Balto mobile app download landing page.",
 };
 
 export default function RootLayout({

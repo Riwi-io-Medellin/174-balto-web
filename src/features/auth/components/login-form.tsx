@@ -4,12 +4,14 @@ import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LogIn, ShieldCheck } from "lucide-react";
+import { useLanguage } from "@/features/i18n";
 
 type LoginState = "idle" | "submitting" | "error";
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   const [state, setState] = useState<LoginState>("idle");
   const [message, setMessage] = useState("");
 
@@ -32,7 +34,7 @@ export function LoginForm() {
 
     if (!response.ok) {
       setState("error");
-      setMessage("No fue posible iniciar sesion con esas credenciales.");
+      setMessage(t("auth.error"));
       return;
     }
 
@@ -57,20 +59,20 @@ export function LoginForm() {
         />
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6d7cff]">
-            Acceso privado
+            {t("auth.privateAccess")}
           </p>
           <h1 className="mt-1 text-2xl font-black text-[#16215c]">
-            Backoffice Balto
+            {t("auth.backoffice")}
           </h1>
         </div>
       </div>
 
       <p className="mt-5 rounded-2xl bg-[#eef1ff] px-4 py-3 text-sm font-semibold leading-6 text-[#526071]">
-        Gestion administrativa de usuarios, verificaciones y servicios.
+        {t("auth.description")}
       </p>
 
       <label className="mt-6 block text-sm font-black text-[#16215c]">
-        Email
+        {t("auth.email")}
         <input
           name="email"
           type="email"
@@ -81,7 +83,7 @@ export function LoginForm() {
       </label>
 
       <label className="mt-4 block text-sm font-black text-[#16215c]">
-        Password
+        {t("auth.password")}
         <input
           name="password"
           type="password"
@@ -103,12 +105,12 @@ export function LoginForm() {
         className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#6d7cff] px-4 text-sm font-black text-white shadow-lg shadow-[#6d7cff]/22 transition hover:-translate-y-0.5 hover:bg-[#5a69f0] disabled:cursor-not-allowed disabled:opacity-70"
       >
         <LogIn className="h-4 w-4" />
-        {state === "submitting" ? "Ingresando..." : "Ingresar"}
+        {state === "submitting" ? t("auth.submitting") : t("auth.submit")}
       </button>
 
       <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-[#687280]">
         <ShieldCheck className="h-4 w-4 text-[#68d391]" />
-        Sesion protegida mediante cookies httpOnly.
+        {t("auth.protectedSession")}
       </div>
     </form>
   );

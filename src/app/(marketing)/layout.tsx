@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Download } from "lucide-react";
+import { LanguageToggle, useLanguage } from "@/features/i18n";
 
 const apkUrl = process.env.NEXT_PUBLIC_APK_URL ?? "/downloads/balto.apk";
 
@@ -8,14 +11,16 @@ export default function MarketingLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-[#f7faf9]">
       <header className="sticky top-0 z-40 border-b border-[#e5e7eb]/80 bg-[#fbfcff]/88 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
+        <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-5 py-3 sm:px-8">
           <a
             href="#inicio"
             className="flex items-center gap-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#6d7cff]"
-            aria-label="Ir al inicio de Balto"
+            aria-label={t("marketing.navHome")}
           >
             <Image
               src="/balto-app-icon.png"
@@ -30,13 +35,17 @@ export default function MarketingLayout({
             </span>
           </a>
 
-          <a
-            href={apkUrl}
-            className="inline-flex h-11 items-center gap-2 rounded-2xl bg-[#6d7cff] px-4 text-sm font-black text-white shadow-lg shadow-[#6d7cff]/25 transition hover:-translate-y-0.5 hover:bg-[#5a69f0] focus:outline-none focus:ring-2 focus:ring-[#6d7cff] focus:ring-offset-2"
-          >
-            <Download className="h-4 w-4" />
-            Descargar APK
-          </a>
+          <div className="flex items-center gap-2">
+            <LanguageToggle compact />
+            <a
+              href={apkUrl}
+              className="inline-flex h-11 items-center gap-2 rounded-2xl bg-[#6d7cff] px-4 text-sm font-black text-white shadow-lg shadow-[#6d7cff]/25 transition hover:-translate-y-0.5 hover:bg-[#5a69f0] focus:outline-none focus:ring-2 focus:ring-[#6d7cff] focus:ring-offset-2"
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("common.downloadApk")}</span>
+              <span className="sm:hidden">APK</span>
+            </a>
+          </div>
         </div>
       </header>
 
@@ -59,7 +68,7 @@ export default function MarketingLayout({
             className="inline-flex h-11 w-fit items-center gap-2 rounded-2xl border border-[#dfe5ef] px-4 text-sm font-black text-[#16215c] transition hover:border-[#6d7cff]/40 hover:text-[#6d7cff]"
           >
             <Download className="h-4 w-4" />
-            Descargar APK
+            {t("common.downloadApk")}
           </a>
         </div>
       </footer>

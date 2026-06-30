@@ -14,6 +14,7 @@ export function LoginForm() {
   const { t } = useLanguage();
   const [state, setState] = useState<LoginState>("idle");
   const [message, setMessage] = useState("");
+  const adminRequired = searchParams.get("error") === "admin_required";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -70,6 +71,12 @@ export function LoginForm() {
       <p className="mt-5 rounded-2xl bg-[#eef1ff] px-4 py-3 text-sm font-semibold leading-6 text-[#526071]">
         {t("auth.description")}
       </p>
+
+      {adminRequired ? (
+        <p className="mt-4 rounded-2xl border border-[#f6c86a]/45 bg-[#fff7e6] px-4 py-3 text-sm font-semibold text-[#8d5b13]">
+          {t("auth.adminRequired")}
+        </p>
+      ) : null}
 
       <label className="mt-6 block text-sm font-black text-[#16215c]">
         {t("auth.email")}

@@ -7,6 +7,7 @@ import {
   refreshAuthTokens,
   setAuthCookies,
 } from "@/features/auth/server";
+import { tokenHasAdminRole } from "@/features/auth/token";
 
 type BackendInit = {
   method?: string;
@@ -21,19 +22,30 @@ export async function proxyBackendJson(
   const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
 
-  let backendResponse = accessToken
-    ? await fetchBackendJson(path, accessToken, init)
+  const backendPath = path.includes("?") ? path : `${path}${request.nextUrl.search}`;
+
+  let activeAccessToken = accessToken;
+  let backendResponse = activeAccessToken && tokenHasAdminRole(activeAccessToken)
+    ? await fetchBackendJson(backendPath, activeAccessToken, init)
     : null;
 
   if ((!backendResponse || backendResponse.status === 401) && refreshToken) {
     const tokens = await refreshAuthTokens(refreshToken);
 
-    if (tokens) {
-      backendResponse = await fetchBackendJson(path, tokens.accessToken, init);
+    if (tokens && tokenHasAdminRole(tokens.accessToken)) {
+      activeAccessToken = tokens.accessToken;
+      backendResponse = await fetchBackendJson(backendPath, tokens.accessToken, init);
       const response = await toJsonResponse(backendResponse);
       setAuthCookies(response, tokens);
       return response;
     }
+  }
+
+  if (activeAccessToken && !tokenHasAdminRole(activeAccessToken)) {
+    return NextResponse.json(
+      { error: "Se requiere rol administrador.", code: "ADMIN_ROLE_REQUIRED" },
+      { status: 403 },
+    );
   }
 
   if (!backendResponse || backendResponse.status === 401) {

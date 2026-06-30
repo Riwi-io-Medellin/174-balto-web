@@ -85,6 +85,7 @@ export type TranslationKey =
   | "auth.email"
   | "auth.password"
   | "auth.error"
+  | "auth.adminRequired"
   | "auth.submitting"
   | "auth.submit"
   | "auth.protectedSession"
@@ -242,6 +243,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     "auth.email": "Email",
     "auth.password": "Password",
     "auth.error": "No fue posible iniciar sesion con esas credenciales.",
+    "auth.adminRequired": "Este acceso requiere una cuenta administradora.",
     "auth.submitting": "Ingresando...",
     "auth.submit": "Ingresar",
     "auth.protectedSession": "Sesion protegida mediante cookies httpOnly.",
@@ -400,6 +402,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     "auth.email": "Email",
     "auth.password": "Password",
     "auth.error": "We could not sign you in with those credentials.",
+    "auth.adminRequired": "This area requires an administrator account.",
     "auth.submitting": "Signing in...",
     "auth.submit": "Sign in",
     "auth.protectedSession": "Session protected with httpOnly cookies.",

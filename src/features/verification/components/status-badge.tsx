@@ -14,7 +14,7 @@ const styles: Record<VerificationStatus, string> = {
 
 export function StatusBadge({ status }: { status: VerificationStatus }) {
   return (
-    <span className={`rounded-md border px-2.5 py-1 text-xs ${styles[status]}`}>
+    <span className={`rounded-md border px-3 py-1.5 text-xs font-semibold ${styles[status]}`}>
       {labels[status]}
     </span>
   );

@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Building2,
+  CheckCircle2,
+  Clock3,
+  FileCheck2,
   ShieldCheck,
   UserCheck,
+  XCircle,
 } from "lucide-react";
 import { ApiError } from "@/features/users/api";
 import {
@@ -98,30 +102,42 @@ export function VerificationPanel() {
   return (
     <section className="space-y-6">
       <div className="rounded-lg border border-white/10 bg-white/5 p-6">
-        <ShieldCheck className="h-5 w-5 text-[#9dd0d0]" />
-        <h3 className="mt-4 text-lg font-semibold text-white">
-          Revision manual de servicios
-        </h3>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
-          Aprueba o rechaza veterinarias y walkers a partir de sus documentos.
-          Un registro aprobado queda activo para los flujos que dependen de
-          `verification_status = approved`.
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-5">
+          <div>
+            <ShieldCheck className="h-5 w-5 text-[#9dd0d0]" />
+            <h3 className="mt-4 text-lg font-semibold text-white">
+              Revision manual de servicios
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+              Revisa el estado actual, abre los documentos cargados y decide si
+              una veterinaria o walker queda aprobado o rechazado.
+            </p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-zinc-950/50 px-4 py-3">
+            <p className="text-xs uppercase text-zinc-500">Regla operativa</p>
+            <p className="mt-1 text-sm font-medium text-white">
+              Solo `approved` queda activo en la app
+            </p>
+          </div>
+        </div>
       </div>
 
       <VerificationSummary businesses={businesses} walkers={walkers} />
 
       <section className="rounded-lg border border-white/10 bg-white/5 p-6">
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
           <Building2 className="h-5 w-5 text-[#9dd0d0]" />
           <div>
             <h3 className="text-lg font-semibold text-white">Veterinarias</h3>
             <p className="text-sm text-zinc-400">
-              Revisa documentos cargados por negocios y cambia su estado.
+              Documentos legales y datos de contacto del negocio.
             </p>
           </div>
+          </div>
+          <StatusLegend />
         </div>
-        <BusinessVerificationTable
+        <BusinessVerificationList
           businesses={businesses}
           pendingId={businessMutation.variables?.businessId}
           isPending={businessMutation.isPending}
@@ -132,16 +148,19 @@ export function VerificationPanel() {
       </section>
 
       <section className="rounded-lg border border-white/10 bg-white/5 p-6">
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
           <UserCheck className="h-5 w-5 text-[#9dd0d0]" />
           <div>
             <h3 className="text-lg font-semibold text-white">Walkers</h3>
             <p className="text-sm text-zinc-400">
-              Revisa cedulas y documentos KYC para habilitar o deshabilitar.
+              Cedula, resultado KYC y documentos para revision manual.
             </p>
           </div>
+          </div>
+          <StatusLegend />
         </div>
-        <WalkerVerificationTable
+        <WalkerVerificationList
           walkers={walkers}
           pendingId={walkerMutation.variables?.walkerId}
           isPending={walkerMutation.isPending}
@@ -170,24 +189,33 @@ function VerificationSummary({
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <SummaryCard label="Veterinarias" value={businesses.length} />
-      <SummaryCard label="Veterinarias pendientes" value={pendingBusinesses} />
-      <SummaryCard label="Walkers" value={walkers.length} />
-      <SummaryCard label="Walkers pendientes" value={pendingWalkers} />
+      <SummaryCard icon={Building2} label="Veterinarias" value={businesses.length} />
+      <SummaryCard icon={Clock3} label="Veterinarias pendientes" value={pendingBusinesses} />
+      <SummaryCard icon={UserCheck} label="Walkers" value={walkers.length} />
+      <SummaryCard icon={Clock3} label="Walkers pendientes" value={pendingWalkers} />
     </div>
   );
 }
 
-function SummaryCard({ label, value }: { label: string; value: number }) {
+function SummaryCard({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Building2;
+  label: string;
+  value: number;
+}) {
   return (
     <article className="rounded-lg border border-white/10 bg-white/5 p-5">
+      <Icon className="h-5 w-5 text-[#9dd0d0]" />
       <p className="text-2xl font-semibold text-white">{value}</p>
       <p className="mt-1 text-sm text-zinc-400">{label}</p>
     </article>
   );
 }
 
-function BusinessVerificationTable({
+function BusinessVerificationList({
   businesses,
   pendingId,
   isPending,
@@ -203,50 +231,28 @@ function BusinessVerificationTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-white/10">
-      <table className="w-full min-w-[960px] border-collapse text-left text-sm">
-        <thead className="bg-white/5 text-xs uppercase text-zinc-400">
-          <tr>
-            <th className="px-4 py-3 font-medium">Veterinaria</th>
-            <th className="px-4 py-3 font-medium">Estado</th>
-            <th className="px-4 py-3 font-medium">Documentos</th>
-            <th className="px-4 py-3 font-medium">Acciones</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-white/10">
-          {businesses.map((business) => (
-            <tr key={business.id} className="text-zinc-200">
-              <td className="px-4 py-4">
-                <p className="font-medium text-white">{business.name}</p>
-                <p className="mt-1 text-xs text-zinc-400">
-                  NIT {business.nit} · {business.email}
-                </p>
-                <p className="mt-1 text-xs text-zinc-500">
-                  {business.location ?? "Sin ubicacion"} · {business.type ?? "Sin tipo"}
-                </p>
-              </td>
-              <td className="px-4 py-4">
-                <StatusBadge status={business.verificationStatus} />
-              </td>
-              <td className="px-4 py-4">
-                <DocumentLinks documents={business.documents} />
-              </td>
-              <td className="px-4 py-4">
-                <StatusActions
-                  currentStatus={business.verificationStatus}
-                  disabled={isPending && pendingId === business.id}
-                  onChange={(status) => onStatusChange(business.id, status)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid gap-4">
+      {businesses.map((business) => (
+        <ReviewCard
+          key={business.id}
+          title={business.name}
+          subtitle={`NIT ${business.nit} · ${business.email}`}
+          status={business.verificationStatus}
+          details={[
+            { label: "Tipo", value: business.type ?? "Sin tipo" },
+            { label: "Ubicacion", value: business.location ?? "Sin ubicacion" },
+            { label: "Telefono", value: String(business.phone) },
+          ]}
+          documents={business.documents}
+          disabled={isPending && pendingId === business.id}
+          onStatusChange={(status) => onStatusChange(business.id, status)}
+        />
+      ))}
     </div>
   );
 }
 
-function WalkerVerificationTable({
+function WalkerVerificationList({
   walkers,
   pendingId,
   isPending,
@@ -262,52 +268,112 @@ function WalkerVerificationTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-white/10">
-      <table className="w-full min-w-[1040px] border-collapse text-left text-sm">
-        <thead className="bg-white/5 text-xs uppercase text-zinc-400">
-          <tr>
-            <th className="px-4 py-3 font-medium">Walker</th>
-            <th className="px-4 py-3 font-medium">Estado</th>
-            <th className="px-4 py-3 font-medium">KYC</th>
-            <th className="px-4 py-3 font-medium">Documentos</th>
-            <th className="px-4 py-3 font-medium">Acciones</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-white/10">
-          {walkers.map((walker) => (
-            <tr key={walker.id} className="text-zinc-200">
-              <td className="px-4 py-4">
-                <p className="font-medium text-white">{walker.fullName}</p>
-                <p className="mt-1 text-xs text-zinc-400">
-                  {walker.workLocation ?? "Sin zona"} ·{" "}
-                  {walker.isAcceptingBookings ? "Acepta reservas" : "No acepta reservas"}
-                </p>
-              </td>
-              <td className="px-4 py-4">
-                <StatusBadge status={walker.verificationStatus} />
-              </td>
-              <td className="px-4 py-4">
-                <p className="text-sm text-zinc-200">
-                  {walker.documentName ?? "Nombre no extraido"}
-                </p>
-                <p className="mt-1 text-xs text-zinc-400">
-                  {walker.documentNumber ?? "Documento no extraido"}
-                </p>
-              </td>
-              <td className="px-4 py-4">
-                <DocumentLinks documents={walker.documents} />
-              </td>
-              <td className="px-4 py-4">
-                <StatusActions
-                  currentStatus={walker.verificationStatus}
-                  disabled={isPending && pendingId === walker.id}
-                  onChange={(status) => onStatusChange(walker.id, status)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid gap-4">
+      {walkers.map((walker) => (
+        <ReviewCard
+          key={walker.id}
+          title={walker.fullName}
+          subtitle={`${walker.workLocation ?? "Sin zona"} · ${
+            walker.isAcceptingBookings ? "Acepta reservas" : "No acepta reservas"
+          }`}
+          status={walker.verificationStatus}
+          details={[
+            { label: "Nombre KYC", value: walker.documentName ?? "No extraido" },
+            { label: "Documento", value: walker.documentNumber ?? "No extraido" },
+            { label: "Experiencia", value: walker.experience ?? "Sin registro" },
+          ]}
+          documents={walker.documents}
+          disabled={isPending && pendingId === walker.id}
+          onStatusChange={(status) => onStatusChange(walker.id, status)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ReviewCard({
+  title,
+  subtitle,
+  status,
+  details,
+  documents,
+  disabled,
+  onStatusChange,
+}: {
+  title: string;
+  subtitle: string;
+  status: VerificationStatus;
+  details: Array<{ label: string; value: string }>;
+  documents: Array<{ id: string; documentType: string; fileUrl: string; createdAt: string }>;
+  disabled: boolean;
+  onStatusChange: (status: VerificationStatus) => void;
+}) {
+  return (
+    <article className="rounded-lg border border-white/10 bg-zinc-950/35 p-5">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(280px,0.48fr)]">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h4 className="truncate text-base font-semibold text-white">{title}</h4>
+              <p className="mt-1 text-sm text-zinc-400">{subtitle}</p>
+            </div>
+            <div className="flex flex-col items-start gap-2 sm:items-end">
+              <span className="text-xs uppercase text-zinc-500">Estado actual</span>
+              <StatusBadge status={status} />
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {details.map((detail) => (
+              <div key={detail.label} className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
+                <p className="text-xs uppercase text-zinc-500">{detail.label}</p>
+                <p className="mt-1 truncate text-sm font-medium text-zinc-200">{detail.value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <StatusActions
+              currentStatus={status}
+              disabled={disabled}
+              onChange={onStatusChange}
+            />
+            {disabled ? (
+              <span className="text-xs text-zinc-500">Actualizando estado...</span>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <FileCheck2 className="h-4 w-4 text-[#9dd0d0]" />
+              <p className="text-sm font-semibold text-white">Documentos</p>
+            </div>
+            <span className="text-xs text-zinc-500">{documents.length}</span>
+          </div>
+          <DocumentLinks documents={documents} />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function StatusLegend() {
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+      <span className="inline-flex items-center gap-1.5">
+        <Clock3 className="h-3.5 w-3.5 text-amber-200" />
+        Pendiente
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-200" />
+        Aprobado
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <XCircle className="h-3.5 w-3.5 text-red-200" />
+        Rechazado
+      </span>
     </div>
   );
 }

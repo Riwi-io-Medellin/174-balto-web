@@ -8,6 +8,10 @@ export const metadata: Metadata = {
     template: "%s | Balto",
   },
   description: "Balto mobile app download landing page.",
+  icons: {
+    icon: "/balto-app-icon.png",
+    apple: "/balto-app-icon.png",
+  },
 };
 
 export default function RootLayout({

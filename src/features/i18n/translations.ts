@@ -85,6 +85,7 @@ export type TranslationKey =
   | "auth.email"
   | "auth.password"
   | "auth.error"
+  | "auth.serviceUnavailable"
   | "auth.adminRequired"
   | "auth.submitting"
   | "auth.submit"
@@ -243,6 +244,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     "auth.email": "Email",
     "auth.password": "Password",
     "auth.error": "No fue posible iniciar sesion con esas credenciales.",
+    "auth.serviceUnavailable":
+      "No fue posible conectar con el backend de autenticacion. Revisa el despliegue o BACKEND_API_URL.",
     "auth.adminRequired": "Este acceso requiere una cuenta administradora.",
     "auth.submitting": "Ingresando...",
     "auth.submit": "Ingresar",
@@ -402,6 +405,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     "auth.email": "Email",
     "auth.password": "Password",
     "auth.error": "We could not sign you in with those credentials.",
+    "auth.serviceUnavailable":
+      "The authentication backend could not be reached. Check the deployment or BACKEND_API_URL.",
     "auth.adminRequired": "This area requires an administrator account.",
     "auth.submitting": "Signing in...",
     "auth.submit": "Sign in",

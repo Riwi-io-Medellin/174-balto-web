@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { tokenHasAdminRole } from "@/features/auth/token";
+import { tokenHasAdminAccess } from "@/features/auth/token";
 
 const ACCESS_TOKEN_COOKIE = "balto_access_token";
 const REFRESH_TOKEN_COOKIE = "balto_refresh_token";
@@ -8,7 +8,7 @@ export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const hasRefreshToken = request.cookies.has(REFRESH_TOKEN_COOKIE);
-  const isAdmin = accessToken ? tokenHasAdminRole(accessToken) : false;
+  const isAdmin = accessToken ? tokenHasAdminAccess(accessToken) : false;
 
   if (pathname.startsWith("/dashboard") && !isAdmin) {
     const loginUrl = request.nextUrl.clone();

@@ -15,6 +15,15 @@ export async function POST(request: Request) {
     });
 
     if (!backendResponse.ok) {
+      if (backendResponse.status >= 500) {
+        const fallback: AuthErrorResponse = {
+          error: "El backend de autenticacion no esta disponible.",
+          code: "AUTH_SERVICE_UNAVAILABLE",
+        };
+        const error = await readJsonOrFallback(backendResponse, fallback);
+        return NextResponse.json(error, { status: backendResponse.status });
+      }
+
       const fallback: AuthErrorResponse = {
         error: "Credenciales invalidas.",
         code: "LOGIN_FAILED",

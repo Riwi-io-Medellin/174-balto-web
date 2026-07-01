@@ -7,14 +7,14 @@ import {
   refreshAuthTokens,
   setAuthCookies,
 } from "@/features/auth/server";
-import { tokenHasAdminRole } from "@/features/auth/token";
+import { tokenHasAdminAccess } from "@/features/auth/token";
 
 export async function GET(request: NextRequest) {
   const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
 
   let activeAccessToken = accessToken;
-  let usersResponse = activeAccessToken && tokenHasAdminRole(activeAccessToken)
+  let usersResponse = activeAccessToken && tokenHasAdminAccess(activeAccessToken)
     ? await getUsersWithToken(activeAccessToken)
     : null;
   let refreshed = false;
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   if (usersResponse?.status === 401 && refreshToken) {
     const tokens = await refreshAuthTokens(refreshToken);
 
-    if (tokens && tokenHasAdminRole(tokens.accessToken)) {
+    if (tokens && tokenHasAdminAccess(tokens.accessToken)) {
       refreshed = true;
       activeAccessToken = tokens.accessToken;
       usersResponse = await getUsersWithToken(tokens.accessToken);
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   if (!usersResponse && refreshToken) {
     const tokens = await refreshAuthTokens(refreshToken);
 
-    if (tokens && tokenHasAdminRole(tokens.accessToken)) {
+    if (tokens && tokenHasAdminAccess(tokens.accessToken)) {
       refreshed = true;
       activeAccessToken = tokens.accessToken;
       usersResponse = await getUsersWithToken(tokens.accessToken);
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  if (activeAccessToken && !tokenHasAdminRole(activeAccessToken)) {
+  if (activeAccessToken && !tokenHasAdminAccess(activeAccessToken)) {
     return NextResponse.json(
       { error: "Se requiere rol administrador.", code: "ADMIN_ROLE_REQUIRED" },
       { status: 403 },

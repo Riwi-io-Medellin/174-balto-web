@@ -7,6 +7,9 @@ import { LogIn, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/features/i18n";
 
 type LoginState = "idle" | "submitting" | "error";
+type LoginErrorResponse = {
+  code?: string;
+};
 
 export function LoginForm() {
   const router = useRouter();
@@ -34,8 +37,14 @@ export function LoginForm() {
     });
 
     if (!response.ok) {
+      const error = await readLoginError(response);
       setState("error");
-      setMessage(t("auth.error"));
+      setMessage(
+        error.code === "AUTH_SERVICE_UNAVAILABLE" ||
+          error.code === "API_URL_NOT_CONFIGURED"
+          ? t("auth.serviceUnavailable")
+          : t("auth.error"),
+      );
       return;
     }
 
@@ -121,4 +130,12 @@ export function LoginForm() {
       </div>
     </form>
   );
+}
+
+async function readLoginError(response: Response): Promise<LoginErrorResponse> {
+  try {
+    return (await response.json()) as LoginErrorResponse;
+  } catch {
+    return {};
+  }
 }
